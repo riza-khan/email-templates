@@ -1,0 +1,44 @@
+{
+    "configToken": "copay-testing-form",
+    "region": "US",
+    "description": "Virtual Core Copay form",
+    "name": "CoPayConfig",
+    "service": "ms-form",
+    "active": true,
+    "siteName": "pfizerpro.com.br",
+    "config": {
+        "fields": [
+            {
+                "name": "submit",
+                "id": "submit",
+                "label": "Submit",
+                "type": "button",
+                "order": 0
+            }
+        ],
+        "types": ["email"],
+        "staticRequestData": {
+            "dateTime": {
+                "FuncRef": {
+                    "Conf:Func": "generate_current_time",
+                    "Conf:Arguments": ["EST", "%d-%b-%Y %H:%M:%S"]
+                }
+            }
+        },
+        "email": [
+            {
+                "template": "market-solutions-test-email-template",
+                "cc": [],
+                "bcc": [],
+                "templateDataMapping": {
+                    "dateTime": { "FieldRef": "dateTime" }
+                },
+                "replyTo": "no-reply@pfizer.com",
+                "description": "Ask A Question - Spain",
+                "from": "no-reply@pfizer.com",
+                "fromText": "No reply",
+                "to": ["rizahasan.khan@pfizer.com"]
+            }
+        ]
+    }
+}
