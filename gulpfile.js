@@ -30,7 +30,7 @@ async function updateEmailTemplate(cb) {
     const minifiedHTML = readFileSync('./src/minified.html', 'utf8');
 
     const emailTemplateObj = {
-      name: 'market-solutions-test-email-template',
+      name: process.env.TARGET_EMAIL_TEMPLATE,
       subject: 'Your Requested Patient Savings Cards',
       text: 'Dear Healthcare Provider,\n\nAttached are the patients savings offers you requested. Each offer has a unique identification number, so please make sure you give it out to only one patient.\n\nPlease visit the product website or https://www.pfizerpro.com/ if you need additional resources for your patients.\n\nThank you!\nPfizer for Professionals\n\n\nTo make sure you receive e-mail from Pfizer, please add noreply@grv.pfizer.com to your address book.\n\nIf you have received this e-mail in error or need assistance, please contact PfizerPro customer experience team toll-free: 1-800-505-4426, Weekdays, 8:30 a.m to 9:00 p.m EST.\n\nPlease do not reply as this is an unattended e-mail box. If you wish to contact Pfizer, go to https://www.pfizer.com/contact\n\nThe information provided is intended only for health care professionals in the United States.\n\nTerms of Use: http://www.pfizer.com/general/terms\nPrivacy Policy: http://www.pfizer.com/general/privacy\n\nPP-MCL-USA-0398\n\nCopyright (c) 2022 Pfizer Inc. All rights reserved.',
       html: minifiedHTML,
@@ -48,7 +48,7 @@ async function submitForm(cb) {
   try {
     const { data: getForm } = await axios.get(process.env.FORM_ENDPOINT, {
       headers: {
-        'x-config-token': process.env.TARGET_CONFIG,
+        'x-config-token': process.env.TARGET_FORM_CONFIG,
       },
     });
 
@@ -59,7 +59,7 @@ async function submitForm(cb) {
       {
         csrfToken,
       },
-      { headers: { 'x-config-token': process.env.TARGET_CONFIG } }
+      { headers: { 'x-config-token': process.env.TARGET_FORM_CONFIG } }
     );
 
     cb();
