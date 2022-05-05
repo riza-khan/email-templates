@@ -34,7 +34,7 @@
                     "dateTime": { "FieldRef": "dateTime" }
                 },
                 "replyTo": "no-reply@pfizer.com",
-                "description": "Ask A Question - Spain",
+                "description": "Email Template Practice",
                 "from": "no-reply@pfizer.com",
                 "fromText": "No reply",
                 "to": ["rizahasan.khan@pfizer.com"]

@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import gulp from 'gulp';
 import { minify } from 'html-minifier-terser';
-import axios from './axios.js';
+import instance from './http.js';
 import { config } from 'dotenv';
 config();
 
@@ -36,7 +36,7 @@ async function updateEmailTemplate(cb) {
             html: minifiedHTML,
         };
 
-        await axios.put(process.env.EMAIL_ENDPOINT, emailTemplateObj);
+        await instance.put(process.env.EMAIL_ENDPOINT, emailTemplateObj);
 
         cb();
     } catch (e) {
@@ -46,15 +46,18 @@ async function updateEmailTemplate(cb) {
 
 async function submitForm(cb) {
     try {
-        const { data: getForm } = await axios.get(process.env.FORM_ENDPOINT, {
-            headers: {
-                'x-config-token': process.env.TARGET_FORM_CONFIG,
-            },
-        });
+        const { data: getForm } = await instance.get(
+            process.env.FORM_ENDPOINT,
+            {
+                headers: {
+                    'x-config-token': process.env.TARGET_FORM_CONFIG,
+                },
+            }
+        );
 
         const { csrfToken } = getForm.data;
 
-        await axios.post(
+        await instance.post(
             process.env.FORM_ENDPOINT,
             {
                 csrfToken,
@@ -68,9 +71,45 @@ async function submitForm(cb) {
     }
 }
 
+async function createOrUpdateForm(cb) {
+    const form = JSON.parse(readFileSync('./src/form.json', 'utf8'));
+
+    try {
+        await instance.post(process.env.CONFIG_ENDPOINT, {
+            ...form,
+        });
+
+        cb();
+    } catch (e) {
+        console.log('Error while creating form', e);
+
+        if (e.response.data.data === 'Config token already exists') {
+            try {
+                await instance.put(
+                    `${process.env.CONFIG_ENDPOINT}/${form.configToken}`,
+                    {
+                        ...form,
+                    },
+                    {
+                        headers: {
+                            'x-config-token': form.configToken,
+                        },
+                    }
+                );
+                console.log('Config updated!');
+                cb();
+            } catch (e) {
+                console.log('Error while updating form', e);
+            }
+        }
+    }
+}
+
 export default function () {
     gulp.watch(
         './src/index.html',
         gulp.series(minifyHTML, updateEmailTemplate, submitForm)
     );
+
+    gulp.watch('./src/form.json', gulp.series(createOrUpdateForm));
 }

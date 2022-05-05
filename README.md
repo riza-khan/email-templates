@@ -17,3 +17,4 @@ The user should only have to change the `index.html` file and the script should 
 1. Text version of email template is still WIP
 2. The form and email templates need to be created first and then used here
 3. When there is an error, the pipeline does not stop
+4. Submitting a form that requires inputs requires adjusting the `gulpfile.js`
